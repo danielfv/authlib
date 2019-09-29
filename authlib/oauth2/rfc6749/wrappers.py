@@ -6,7 +6,12 @@ from .errors import InsecureTransportError
 class OAuth2Token(dict):
     def __init__(self, params):
         if 'expires_at' in params:
-            params['expires_at'] = int(params['expires_at'])
+            try:
+                params['expires_at'] = int(params['expires_at'])
+            except:
+                import dateutil
+                params['expires_at'] = dateutil.parser.parse(params['expires_at'])
+
         elif 'expires_in' in params:
             params['expires_at'] = int(time.time()) + \
                                    int(params['expires_in'])
